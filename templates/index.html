@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário Flask</title>
+</head>
+<body>
+    <h1>Formulário de Nome e Preferência</h1>
+
+    <!-- Formulário para inserir o nome e a preferência -->
+    <form method="POST">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required>
+
+        <br><br>
+
+        <label for="preferencia">O que você prefere, texto ou imagem?</label>
+        <select id="preferencia" name="preferencia" required>
+            <option value="texto">Texto</option>
+            <option value="imagem">Imagem</option>
+        </select>
+
+        <br><br>
+
+        <button type="submit">Salvar</button>
+    </form>
+
+    <!-- Lista de nomes e preferências cadastrados -->
+    <h2>Dados Cadastrados:</h2>
+    <ul>
+        {% for pessoa in pessoas %}
+            <li>{{ pessoa.nome }} - Prefere: {{ pessoa.preferencia }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
