@@ -4,13 +4,15 @@
     <title>Teste de Conhecimento</title>
 </head>
 <body>
-    <h1>Teste de Conhecimento</h1>
-    <form method="POST" action="/teste">
-        <label for="resposta_ia">O que significa IA?</label><br>
-        <textarea id="resposta_ia" name="resposta_ia" rows="4" cols="50"></textarea><br><br>
+    <h1>Knowledge TEST</h1>
+    <form method="POST" action="/test_1">
+        <label for="resposta_pergunta_1">O que significa IA?</label><br>
+        <textarea id="resposta_pergunta_1" name="resposta_pergunta_1" rows="4" cols="50" required></textarea><br><br>
 
-        <label for="resposta_subgrupos">Quais os subgrupos de IA?</label><br>
-        <textarea id="resposta_subgrupos" name="resposta_subgrupos" rows="4" cols="50"></textarea><br><br>
+        <label for="resposta_pergunta_2">Quais os subgrupos de IA?</label><br>
+        <textarea id="resposta_pergunta_2" name="resposta_pergunta_2" rows="4" cols="50" required></textarea><br><br>
+
+        <input type="submit" value="Submit">
     </form>
     <a href="/resultado">Ver resultados</a>
 </body>

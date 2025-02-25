@@ -1,81 +1,86 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from forms import PersonalDataForm
 import sqlite3
 
-app = Flask(__name__)
-app.secret_key = 'chave_secreta'  # Importante para segurança entre as trocas de páginas
-
-# CÓDIGO ANTERIOR #
-from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.secret_key = 'secret_key'  # Important for using sessions
 
-# Configuração do banco de dados SQLite
+# Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Inicializa o banco de dados
+# Initialize the database
 db = SQLAlchemy(app)
-# Inicializa o Flask-Migrate
 migrate = Migrate(app, db)
 
-# Modelo para a tabela de pessoas
+# Model for the people table
 class Person(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
-        name = db.Column(db.String(100), nullable=False)
-        phone_number = db.Column(db.String(50), nullable=False, default='default_value')
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    phone_number = db.Column(db.String(50), nullable=False)
+    resposta_pergunta_1 = db.Column(db.String(500), nullable=True)
+    resposta_pergunta_2 = db.Column(db.String(500), nullable=True)
 
-# Rota para a página inicial
+# Route for the home page
 @app.route('/', methods=['GET', 'POST'])
 def index():
-        if request.method == 'POST':
-            # Coleta o nome e o número de telefone do formulário
-            name = request.form['Name']
-            phone_number = request.form['Phone Number']
+    form = PersonalDataForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        phone_number = form.phone_number.data
 
-            # Cria um novo registro no banco de dados
-            new_person = Person(name=name, phone_number=phone_number)
-            db.session.add(new_person)
+        # Save data to the database
+        person = Person(name=name, phone_number=phone_number)
+        db.session.add(person)
+        db.session.commit()
+
+        # Store data in session
+        session['person_id'] = person.id
+
+        return redirect(url_for('test_1'))
+
+    return render_template('personal_data.html', form=form)
+
+@app.route('/test_1', methods=['GET', 'POST'])
+def test_1():
+    # Check if personal data was entered
+    if 'person_id' not in session:
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        if 'resposta_pergunta_1' in request.form and 'resposta_pergunta_2' in request.form:
+            resposta_pergunta_1 = request.form['resposta_pergunta_1']
+            resposta_pergunta_2 = request.form['resposta_pergunta_2']
+
+            # Update test responses in the database
+            person = Person.query.get(session['person_id'])
+            person.resposta_pergunta_1 = resposta_pergunta_1
+            person.resposta_pergunta_2 = resposta_pergunta_2
             db.session.commit()
 
-            # Redireciona para a página inicial
-            return redirect(url_for('index'))
+            #Anterior, voltar se erro
+            #return redirect(url_for('resultado'))
+            return redirect(url_for('resultado', resposta_pergunta_1=resposta_pergunta_1, resposta_pergunta_2=resposta_pergunta_2))
+        else:
+            return "Form data is missing", 400
 
-        # Renderiza a página inicial sem passar os registros
-        return render_template('index.html')
+    return render_template('test_1.html')
+
+@app.route('/resultado')
+def resultado():
+    resposta_pergunta_1 = request.args.get('resposta_pergunta_1')
+    resposta_subgrupos = request.args.get('resposta_pergunta_2')
+
+
+    #return render_template('resultado.html', resposta_pergunta_1=resposta_pergunta_1, resposta_pergunta_2=resposta_pergunta_2)
+
+    #Voltar, se erro
+    return ("Course in development..."
+            "Test 2 will be available soon..."
+            "Comparison too")
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-# CÓDIGO ATUALIZADO #
-
-
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        nome = request.form['nome']
-        telefone = request.form['telefone']
-
-        # Armazena os dados na sessão
-        session['nome'] = nome
-        session['telefone'] = telefone
-
-        # Ou armazena no banco de dados
-        # conn = sqlite3.connect('seu_banco.db')
-        # cursor = conn.cursor()
-        # cursor.execute('INSERT INTO alunos (nome, telefone) VALUES (?, ?)', (nome, telefone))
-        # conn.commit()
-        # conn.close()
-
-        return redirect(url_for('teste'))
-
-    return render_template('index.html')
-
-@app.route('/teste', methods=['GET', 'POST'])
-def teste():
-    # Verifica se os dados pessoais foram inseridos
-    if 'nome' not in session:
-        return redirect(url_for('index'))
-
-    # ... (seu código existente para o teste) ...

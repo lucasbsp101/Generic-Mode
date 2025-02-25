@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Página Inicial</title>
+    <title>Home Page</title>
 </head>
 <body>
-    <h1>Bem-vindo ao Curso de IA para Iniciantes</h1>
+    <h1>Welcome to the AI Course for Beginners</h1>
     <form method="POST" action="/">
-        <label for="nome">Nome:</label><br>
-        <input type="text" id="nome" name="nome"><br><br>
+        {{ form.hidden_tag() }}
+        <label for="name">Name:</label><br>
+        {{ form.name(id="name", size=32) }}<br><br>
 
-        <label for="telefone">Telefone:</label><br>
-        <input type="tel" id="telefone" name="telefone"><br><br>
+        <label for="phone_number">Phone Number:</label><br>
+        {{ form.phone_number(id="phone_number", size=32) }}<br><br>
 
-        <input type="submit" value="Próxima página">
+        {{ form.submit() }}
     </form>
 </body>
 </html>
