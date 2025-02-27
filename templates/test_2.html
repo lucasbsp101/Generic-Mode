@@ -1,0 +1,24 @@
+<!-- developing -->
+<!-- templates/test_2.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste de Conhecimento</title>
+</head>
+<body>
+    <h1>Knowledge TEST - 2</h1>
+    <form method="POST" action="/test_2">
+        <label for="AQ3">What it's IA?</label><br>
+        <textarea id="AQ3" name="AQ3" rows="4" cols="50" required></textarea><br><br>
+
+        <label for="AQ4">Describe the subtopics of IA?</label><br>
+        <textarea id="AQ4" name="AQ4" rows="4" cols="50" required></textarea><br><br>
+
+        <!-- Campos ocultos para AQ1 e AQ2 -->
+        <input type="hidden" name="AQ1" value="{{ AQ1 }}">
+        <input type="hidden" name="AQ2" value="{{ AQ2 }}">
+
+        <button type="submit">Go to comparison</button>
+    </form>
+</body>
+</html>
